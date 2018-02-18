@@ -7,7 +7,6 @@
 #include "Define.h"
 #include "GossipDef.h"
 
-int32 roll;
 bool RewardSystem_Enable;
 uint32 Max_roll;
 
@@ -16,43 +15,57 @@ class reward_system : public PlayerScript
 public:
     reward_system() : PlayerScript("rewardsystem") {}
 
-    uint32 rewardtimer = urand(2 * HOUR*IN_MILLISECONDS, 4 * HOUR*IN_MILLISECONDS);
+    uint32 RewardTimer;
+    int32 roll;
 
-    void OnBeforePlayerUpdate(Player* player, uint32 p_time)
+    void OnLogin(Player* p)
     {
-
-        if (!RewardSystem_Enable)
-            return;
+        if (RewardSystem_Enable)
         {
-            if (rewardtimer <= p_time)
+            ChatHandler(p->GetSession()).SendSysMessage("This server is running the |cff4CFF00Player Reward System |rmodule.");
+            RewardTimer = (sConfigMgr->GetIntDefault("RewardTime", 1)*HOUR*IN_MILLISECONDS);
+        }
+    }
+
+    void OnBeforeUpdate(Player* player, uint32 p_time)
+    {
+        if (RewardSystem_Enable)
+        {
+            if (RewardTimer > 0)
             {
-                roll = urand(1, Max_roll); //Lets make a random number from 1 - 
-                QueryResult result = CharacterDatabase.PQuery("SELECT item, quantity FROM reward_system WHERE roll = '%u'", roll);
-                rewardtimer = urand(2 * HOUR*IN_MILLISECONDS, 4 * HOUR*IN_MILLISECONDS);
-				
-                if (!result || player->isAFK())
-                {
+                if (player->isAFK())
                     return;
-                } 
-                else
+
+                if (RewardTimer <= p_time)
                 {
+                    roll = urand(1, Max_roll);
+                    QueryResult result = CharacterDatabase.PQuery("SELECT item, quantity FROM reward_system WHERE roll = '%u'", roll);
+
+                    if (!result)
+                    {
+                        ChatHandler(player->GetSession()).PSendSysMessage("better luck next time your roll was %u", roll);
+                        RewardTimer = (sConfigMgr->GetIntDefault("RewardTime", 1)*HOUR*IN_MILLISECONDS);
+                        return;
+                    }
+
+                    //Lets now get the item
                     do
                     {
-                        //Lets now get the item
                         Field* fields = result->Fetch();
                         uint32 pItem = fields[0].GetInt32();
                         uint32 quantity = fields[1].GetInt32();
 
                         // now lets add the item
                         player->AddItem(pItem, quantity);
-
-                        ChatHandler(player->GetSession()).PSendSysMessage("You have rolled %u which gave you item %u", roll, pItem);
-
+                        ChatHandler(player->GetSession()).PSendSysMessage("Congratulations you have won with a roll of %u", roll);
                     } while (result->NextRow());
+
+
+                    RewardTimer = (sConfigMgr->GetIntDefault("RewardTime", 1)*HOUR*IN_MILLISECONDS);
                 }
+                else  RewardTimer -= p_time;
             }
-            else
-                rewardtimer -= p_time;
+
         }
     }
 };
@@ -65,13 +78,16 @@ public:
     void OnBeforeConfigLoad(bool reload) override
     {
         if (!reload) {
-            std::string cfg_file = "reward_system.conf";
+            std::string conf_path = _CONF_DIR;
+            std::string cfg_file = conf_path + "/reward_system.conf";
+
+#ifdef WIN32
+            cfg_file = "reward_system.conf";
+#endif // WIN32
+
             std::string cfg_def_file = cfg_file + ".dist";
-
             sConfigMgr->LoadMore(cfg_def_file.c_str());
-
             sConfigMgr->LoadMore(cfg_file.c_str());
-
             RewardSystem_Enable = sConfigMgr->GetBoolDefault("RewardSystemEnable", true);
             Max_roll = sConfigMgr->GetIntDefault("MaxRoll", 1000);
         }
