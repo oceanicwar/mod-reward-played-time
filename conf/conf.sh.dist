@@ -4,6 +4,6 @@
 # CUSTOM
 #
 
-    DB_CHARACTERS_CUSTOM_PATHS+=(
-        $MOD_REWARD_SYSTEM_ROOT"/sql/characters/"
-        )
+DB_CHARACTERS_CUSTOM_PATHS+=(
+    $MOD_REWARD_SYSTEM_ROOT"/sql/characters/"
+)

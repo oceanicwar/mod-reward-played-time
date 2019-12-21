@@ -20,11 +20,11 @@ public:
     int32 roll;
 
     void OnLogin(Player* player)  override
-	{
-		if (sConfigMgr->GetBoolDefault("RewardSystem.Announce", true)) {
-			ChatHandler(player->GetSession()).SendSysMessage("This server is running the |cff4CFF00Reward Time Played |rmodule.");
-		}
-	}
+    {
+        if (sConfigMgr->GetBoolDefault("RewardSystem.Announce", true)) {
+            ChatHandler(player->GetSession()).SendSysMessage("This server is running the |cff4CFF00Reward Time Played |rmodule.");
+        }
+    }
 
     void OnBeforeUpdate(Player* player, uint32 p_time) override
     {
