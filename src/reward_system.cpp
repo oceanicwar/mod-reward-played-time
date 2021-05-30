@@ -13,6 +13,7 @@ uint32 Max_roll;
 
 class reward_system : public PlayerScript
 {
+
 public:
     reward_system() : PlayerScript("reward_system") {}
 
