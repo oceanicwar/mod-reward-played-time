@@ -121,7 +121,7 @@ public:
         // fill mail
         MailDraft draft(subject, text);
 
-        SQLTransaction trans = CharacterDatabase.BeginTransaction();
+        CharacterDatabaseTransaction trans = CharacterDatabase.BeginTransaction();
 
         for (ItemPairs::const_iterator itr = items.begin(); itr != items.end(); ++itr)
         {
