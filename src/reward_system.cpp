@@ -23,7 +23,7 @@ public:
 
     void OnLogin(Player* player)  override
     {
-        if (sConfigMgr->GetBoolDefault("RewardSystem.Announce", true)) {
+        if (sConfigMgr->GetBoolDefault("RewardSystemEnable", true) && sConfigMgr->GetBoolDefault("RewardSystem.Announce", true)) {
             ChatHandler(player->GetSession()).SendSysMessage("This server is running the |cff4CFF00Reward Time Played |rmodule.");
         }
     }
@@ -81,7 +81,7 @@ public:
         std::string receiverName;
 
         std::string subject = "Reward System prize";
-        std::string text = "Congratulations, you won a prize but your inventory was full. Please take your items when you will free space from your inventory";
+        std::string text = "Congratulations, you won a prize!";
 
         ItemTemplate const* item_proto = sObjectMgr->GetItemTemplate(itemId);
 
