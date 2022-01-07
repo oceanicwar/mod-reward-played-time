@@ -17,20 +17,20 @@ class reward_system : public PlayerScript
 public:
     reward_system() : PlayerScript("reward_system") {}
 
-    uint32 initialTimer = (sConfigMgr->GetIntDefault("RewardTime", 1) * HOUR * IN_MILLISECONDS);
+    uint32 initialTimer = (sConfigMgr->GetOption<uint32>("RewardTime", 1) * HOUR * IN_MILLISECONDS);
     uint32 RewardTimer = initialTimer;
     int32 roll;
 
     void OnLogin(Player* player)  override
     {
-        if (sConfigMgr->GetBoolDefault("RewardSystemEnable", true) && sConfigMgr->GetBoolDefault("RewardSystem.Announce", true)) {
+        if (sConfigMgr->GetOption<bool>("RewardSystemEnable", true) && sConfigMgr->GetOption<bool>("RewardSystem.Announce", true)) {
             ChatHandler(player->GetSession()).SendSysMessage("This server is running the |cff4CFF00Reward Time Played |rmodule.");
         }
     }
 
     void OnBeforeUpdate(Player* player, uint32 p_time) override
     {
-        if (sConfigMgr->GetBoolDefault("RewardSystemEnable", true))
+        if (sConfigMgr->GetOption<bool>("RewardSystemEnable", true))
         {
             if (RewardTimer > 0)
             {
@@ -40,6 +40,7 @@ public:
                 if (RewardTimer <= p_time)
                 {
                     roll = urand(1, Max_roll);
+                    // TODO: this should use a asynchronous query with a callback instead of a synchronous, blocking query
                     QueryResult result = CharacterDatabase.PQuery("SELECT item, quantity FROM reward_system WHERE roll = '%u'", roll);
 
                     if (!result)
@@ -148,7 +149,7 @@ public:
     void OnBeforeConfigLoad(bool reload) override
     {
         if (!reload) {
-            Max_roll = sConfigMgr->GetIntDefault("MaxRoll", 1000);
+            Max_roll = sConfigMgr->GetOption<uint32>("MaxRoll", 1000);
         }
     }
 };
