@@ -88,13 +88,13 @@ public:
 
         if (!item_proto)
         {
-            sLog->outError("[Reward System] The itemId is invalid: %u", itemId);
+            LOG_ERROR("module", "[Reward System] The itemId is invalid: %u", itemId);
             return;
         }
 
         if (count < 1 || (item_proto->MaxCount > 0 && count > uint32(item_proto->MaxCount)))
         {
-            sLog->outError("[Reward System] The item count is invalid: %u : %u", itemId, count);
+            LOG_ERROR("module", "[Reward System] The item count is invalid: %u : %u", itemId, count);
             return;
         }
 
@@ -112,7 +112,7 @@ public:
 
         if (items.size() > MAX_MAIL_ITEMS)
         {
-            sLog->outError("[Reward System] Maximum email items is %u, current size: %lu", MAX_MAIL_ITEMS, items.size());
+            LOG_ERROR("module", "[Reward System] Maximum email items is %u, current size: %lu", MAX_MAIL_ITEMS, items.size());
             return;
         }
 
