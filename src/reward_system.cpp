@@ -41,11 +41,11 @@ public:
                 {
                     roll = urand(1, Max_roll);
                     // TODO: this should use a asynchronous query with a callback instead of a synchronous, blocking query
-                    QueryResult result = CharacterDatabase.PQuery("SELECT item, quantity FROM reward_system WHERE roll = '%u'", roll);
+                    QueryResult result = CharacterDatabase.Query("SELECT item, quantity FROM reward_system WHERE roll = '{}'", roll);
 
                     if (!result)
                     {
-                        ChatHandler(player->GetSession()).PSendSysMessage("[Reward System] Better luck next time! Your roll was %u.", roll);
+                        ChatHandler(player->GetSession()).PSendSysMessage("[Reward System] Better luck next time! Your roll was {}.", roll);
                         RewardTimer = initialTimer;
                         return;
                     }
@@ -54,15 +54,15 @@ public:
                     do
                     {
                         Field* fields = result->Fetch();
-                        uint32 pItem = fields[0].GetInt32();
-                        uint32 quantity = fields[1].GetInt32();
+                        uint32 pItem = fields[0].Get<int32>();
+                        uint32 quantity = fields[1].Get<int32>();
 
                         // now lets add the item
                         //player->AddItem(pItem, quantity);
                         SendRewardToPlayer(player, pItem, quantity);
                     } while (result->NextRow());
 
-                    ChatHandler(player->GetSession()).PSendSysMessage("[Reward System] Congratulations you have won with a roll of %u", roll);
+                    ChatHandler(player->GetSession()).PSendSysMessage("[Reward System] Congratulations you have won with a roll of {}", roll);
 
                     RewardTimer = initialTimer;
                 }
@@ -88,13 +88,13 @@ public:
 
         if (!item_proto)
         {
-            LOG_ERROR("module", "[Reward System] The itemId is invalid: %u", itemId);
+            LOG_ERROR("module", "[Reward System] The itemId is invalid: {}", itemId);
             return;
         }
 
         if (count < 1 || (item_proto->MaxCount > 0 && count > uint32(item_proto->MaxCount)))
         {
-            LOG_ERROR("module", "[Reward System] The item count is invalid: %u : %u", itemId, count);
+            LOG_ERROR("module", "[Reward System] The item count is invalid: {} : {}", itemId, count);
             return;
         }
 
@@ -112,7 +112,7 @@ public:
 
         if (items.size() > MAX_MAIL_ITEMS)
         {
-            LOG_ERROR("module", "[Reward System] Maximum email items is %u, current size: %lu", MAX_MAIL_ITEMS, items.size());
+            LOG_ERROR("module", "[Reward System] Maximum email items is {}, current size: {}", MAX_MAIL_ITEMS, items.size());
             return;
         }
 
