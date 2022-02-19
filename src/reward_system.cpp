@@ -45,7 +45,7 @@ public:
 
                     if (!result)
                     {
-                        ChatHandler(player->GetSession()).PSendSysMessage("[Reward System] Better luck next time! Your roll was {}.", roll);
+                        ChatHandler(player->GetSession()).PSendSysMessage("[Reward System] Better luck next time! Your roll was %u.", roll);
                         RewardTimer = initialTimer;
                         return;
                     }
@@ -62,7 +62,7 @@ public:
                         SendRewardToPlayer(player, pItem, quantity);
                     } while (result->NextRow());
 
-                    ChatHandler(player->GetSession()).PSendSysMessage("[Reward System] Congratulations you have won with a roll of {}", roll);
+                    ChatHandler(player->GetSession()).PSendSysMessage("[Reward System] Congratulations you have won with a roll of %u.", roll);
 
                     RewardTimer = initialTimer;
                 }
