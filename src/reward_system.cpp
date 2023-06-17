@@ -1,4 +1,4 @@
-//Reward system made by Talamortis
+//Reward system made by Talamortis, modified by Jeremy
 
 #include "Configuration/Config.h"
 #include "Player.h"
@@ -17,7 +17,7 @@ class reward_system : public PlayerScript
 public:
     reward_system() : PlayerScript("reward_system") {}
 
-    uint32 initialTimer = (sConfigMgr->GetOption<uint32>("RewardTime", 1) * HOUR * IN_MILLISECONDS);
+    uint32 initialTimer = (sConfigMgr->GetOption<uint32>("RewardTime", 30) * MINUTE * IN_MILLISECONDS);
     uint32 RewardTimer = initialTimer;
     int32 roll;
 
@@ -45,7 +45,7 @@ public:
 
                     if (!result)
                     {
-                        ChatHandler(player->GetSession()).PSendSysMessage("[Activity Reward] Better luck next time! Your roll was %u.", roll);
+                        ChatHandler(player->GetSession()).PSendSysMessage("[Activity Reward] Nothing was rewarded this time.", roll);
                         RewardTimer = initialTimer;
                         return;
                     }
@@ -58,8 +58,8 @@ public:
                         uint32 quantity = fields[1].Get<int32>();
 
                         // now lets add the item
-                        //player->AddItem(pItem, quantity);
-                        SendRewardToPlayer(player, pItem, quantity);
+                        player->AddItem(pItem, quantity);
+                        //SendRewardToPlayer(player, pItem, quantity);
                     } while (result->NextRow());
 
                     ChatHandler(player->GetSession()).PSendSysMessage("[Activity Reward] You have been rewarded for online activity.", roll);
@@ -149,7 +149,7 @@ public:
     void OnBeforeConfigLoad(bool reload) override
     {
         if (!reload) {
-            Max_roll = sConfigMgr->GetOption<uint32>("MaxRoll", 1000);
+            Max_roll = sConfigMgr->GetOption<uint32>("MaxRoll", 1);
         }
     }
 };
