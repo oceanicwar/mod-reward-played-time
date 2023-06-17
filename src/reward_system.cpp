@@ -45,7 +45,7 @@ public:
 
                     if (!result)
                     {
-                        ChatHandler(player->GetSession()).PSendSysMessage("[Reward System] Better luck next time! Your roll was %u.", roll);
+                        ChatHandler(player->GetSession()).PSendSysMessage("[Activity Reward] Better luck next time! Your roll was %u.", roll);
                         RewardTimer = initialTimer;
                         return;
                     }
@@ -62,7 +62,7 @@ public:
                         SendRewardToPlayer(player, pItem, quantity);
                     } while (result->NextRow());
 
-                    ChatHandler(player->GetSession()).PSendSysMessage("[Reward System] Congratulations you have won with a roll of %u.", roll);
+                    ChatHandler(player->GetSession()).PSendSysMessage("[Activity Reward] You have been rewarded for online activity.", roll);
 
                     RewardTimer = initialTimer;
                 }
@@ -76,25 +76,25 @@ public:
         if (receiver->IsInWorld() && receiver->AddItem(itemId, count))
             return;
 
-        ChatHandler(receiver->GetSession()).PSendSysMessage("You will receive your item in your mailbox");
+        ChatHandler(receiver->GetSession()).PSendSysMessage("[Activity Reward] You will receive your item in your mailbox.");
         // format: name "subject text" "mail text" item1[:count1] item2[:count2] ... item12[:count12]
         uint64 receiverGuid = receiver->GetGUID().GetCounter();
         std::string receiverName;
 
-        std::string subject = "Reward System prize";
-        std::string text = "Congratulations, you won a prize!";
+        std::string subject = "Online Activity Reward";
+        std::string text = "Enjoy your reward!";
 
         ItemTemplate const* item_proto = sObjectMgr->GetItemTemplate(itemId);
 
         if (!item_proto)
         {
-            LOG_ERROR("module", "[Reward System] The itemId is invalid: {}", itemId);
+            LOG_ERROR("module", "[Activity Reward] The itemId is invalid: {}", itemId);
             return;
         }
 
         if (count < 1 || (item_proto->MaxCount > 0 && count > uint32(item_proto->MaxCount)))
         {
-            LOG_ERROR("module", "[Reward System] The item count is invalid: {} : {}", itemId, count);
+            LOG_ERROR("module", "[Activity Reward] The item count is invalid: {} : {}", itemId, count);
             return;
         }
 
@@ -112,7 +112,7 @@ public:
 
         if (items.size() > MAX_MAIL_ITEMS)
         {
-            LOG_ERROR("module", "[Reward System] Maximum email items is {}, current size: {}", MAX_MAIL_ITEMS, items.size());
+            LOG_ERROR("module", "[Activity Reward] Maximum email items is {}, current size: {}", MAX_MAIL_ITEMS, items.size());
             return;
         }
 
