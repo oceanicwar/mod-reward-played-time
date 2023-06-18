@@ -19,7 +19,7 @@ RewardSystemEnable = 1
 #        Description: Time in minutes to reward the player
 #        Default:     1  - (Enabled)
 #                     
-RewardTime = 30
+RewardTime = 60
 
 #
 #    MaxRoll

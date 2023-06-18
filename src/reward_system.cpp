@@ -17,7 +17,7 @@ class reward_system : public PlayerScript
 public:
     reward_system() : PlayerScript("reward_system") {}
 
-    uint32 initialTimer = (sConfigMgr->GetOption<uint32>("RewardTime", 30) * MINUTE * IN_MILLISECONDS);
+    uint32 initialTimer = (sConfigMgr->GetOption<uint32>("RewardTime", 60) * MINUTE * IN_MILLISECONDS);
     uint32 RewardTimer = initialTimer;
     int32 roll;
 
@@ -58,7 +58,10 @@ public:
                         uint32 quantity = fields[1].Get<int32>();
 
                         // now lets add the item
-                        player->AddItem(pItem, quantity);
+                        float timePlayed = (float)player->GetTotalPlayedTime();
+						float multi = 0.00005;
+						quantity = quantity + (multi * timePlayed);
+						player->AddItem(pItem, quantity);
                         //SendRewardToPlayer(player, pItem, quantity);
                     } while (result->NextRow());
 
