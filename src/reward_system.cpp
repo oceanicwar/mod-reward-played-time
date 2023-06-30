@@ -59,7 +59,7 @@ public:
 
                         // now lets add the item
                         float timePlayed = (float)player->GetTotalPlayedTime();
-						float multi = 0.000025;
+						float multi = sConfigMgr->GetOption<float>("RewardMultiplier", 0.000025);
 						quantity = quantity + (multi * timePlayed);
 						player->AddItem(pItem, quantity);
                         //SendRewardToPlayer(player, pItem, quantity);

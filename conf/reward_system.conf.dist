@@ -17,9 +17,16 @@ RewardSystemEnable = 1
 #
 #    RewardTime
 #        Description: Time in minutes to reward the player
-#        Default:     1  - (Enabled)
+#        Default:     30  - (Enabled)
 #                     
-RewardTime = 60
+RewardTime = 30
+
+#
+#    RewardMultiplier
+#        Description: Multiplier based on character total play time for rewards set within reward table
+#        Default:     0.000025  - (Enabled)
+#     
+RewardMultiplier = 0.000025
 
 #
 #    MaxRoll
